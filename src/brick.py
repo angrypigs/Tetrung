@@ -24,7 +24,7 @@ class Brick:
             blocks.append(
                 (
                     X_CORNER + 32 * (self.x + coord[1]),
-                    Y_CORNER + 32 * (self.y + coord[0] - 4)
+                    Y_CORNER + 32 * (self.y + coord[0] - 5)
                 )
             )
         self.coords = tuple(blocks)

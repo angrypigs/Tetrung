@@ -36,8 +36,15 @@ class Game:
                     elif event.key == pygame.K_DOWN:
                         if self.board.move(row_add = 1):
                             self.current_block.move(0, 1)
-
-
+                    elif event.key == pygame.K_UP:
+                        if self.board.rotate():
+                            self.current_block.template = self.board.get_template()
+                            self.current_block.template_to_coords()
+                    elif event.key == pygame.K_SPACE:
+                        self.board.instant_down()
+                        self.current_block = Brick(self.screen,
+                                                   4, 2, self.board.get_template(),
+                                                   self.IMAGES["blocks"][self.board.current_block - 1])
             self.counter = (self.counter + 1) % 900
             if self.counter % 30 == 0:
                 match self.board.frame_move():
@@ -61,7 +68,7 @@ class Game:
             for col in range(10):
                 if self.board.matrix[row][col] != 0:
                     self.screen.blit(self.IMAGES["blocks"][self.board.matrix[row][col] - 1],
-                                     (X_CORNER + 32 * col, Y_CORNER + 32 * (row - 4)))
+                                     (X_CORNER + 32 * col, Y_CORNER + 32 * (row - 5)))
         self.current_block.draw()
 
     def __init_images(self) -> None:
