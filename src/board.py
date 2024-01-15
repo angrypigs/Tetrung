@@ -10,7 +10,7 @@ class Board:
         self.next_blocks = sample(range(1, 8), 3)
         self.current_block = randint(1, 7)
         self.current_state = 0
-        self.row = 2
+        self.row = 4
         self.col = 4
         self.rows_to_remove = []
         self.flag_placed = False
@@ -29,7 +29,7 @@ class Board:
                      self.row, self.col)
         self.current_block = self.next_blocks.pop(0)
         self.next_blocks.append(randint(1, 7))
-        self.row, self.col = 2, 4
+        self.row, self.col = 4, 4
         self.current_state = 0
         for row in range(24, 0, -1):
             if self.matrix[row].count(0) == 0:
