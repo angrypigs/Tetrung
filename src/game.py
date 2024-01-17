@@ -20,15 +20,16 @@ class Game:
         self.pause = False
         self.counter = 0
         self.board = Board()
-        self.current_block = Brick(self.screen, 4, 4,
+        self.current_block = Brick(self.screen,
                                    self.board.get_template(),
                                    self.IMAGES["blocks"][self.board.current_block - 1])
+        self.current_block.place_on_gridcell(4, -1)
         self.next_blocks : list[Brick] = []
         for i in range(3):
             self.next_blocks.append(Brick(self.screen,
-                                          13, 7 + i * 5,
-                                          TEMPLATES[self.board.next_blocks[i] - 1][0],
+                                          TEMPLATES[self.board.next_blocks[i] - 1][1],
                                           self.IMAGES["blocks"][self.board.next_blocks[i] - 1]))
+            self.next_blocks[i].place_at_middle(X_CORNER + 432, Y_CORNER + 32 * (2 + i * 4))
         while self.run:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -36,17 +37,17 @@ class Game:
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RIGHT:
                         if not self.pause and self.board.move(col_add = 1):
-                            self.current_block.move(1, 0)
+                            self.current_block.move_on_gridcell(1, 0)
                     elif event.key == pygame.K_LEFT:
                         if not self.pause and self.board.move(col_add = -1):
-                            self.current_block.move(-1, 0)
+                            self.current_block.move_on_gridcell(-1, 0)
                     elif event.key == pygame.K_DOWN:
                         if not self.pause and self.board.move(row_add = 1):
-                            self.current_block.move(0, 1)
+                            self.current_block.move_on_gridcell(0, 1)
                     elif event.key == pygame.K_UP:
                         if not self.pause and self.board.rotate():
                             self.current_block.template = self.board.get_template()
-                            self.current_block.template_to_coords()
+                            self.current_block.place_on_gridcell()
                     elif event.key == pygame.K_SPACE:
                         if not self.pause:
                             self.board.instant_down()
@@ -57,7 +58,7 @@ class Game:
             if not self.pause and self.counter % 30 == 0:
                 match self.board.frame_move():
                     case "moved":
-                        self.current_block.move(0, 1)
+                        self.current_block.move_on_gridcell(0, 1)
                     case "changed":
                         self.change_next_bricks()
             self.draw_game()
@@ -69,20 +70,21 @@ class Game:
 
     def change_next_bricks(self) -> None:
         self.current_block = Brick(self.screen,
-                                    4, 4, self.board.get_template(),
+                                    self.board.get_template(),
                                     self.IMAGES["blocks"][self.board.current_block - 1])
+        self.current_block.place_on_gridcell(4, -1)
         self.next_blocks.pop(0)
-        self.next_blocks[0].move(0, -5)
-        self.next_blocks[1].move(0, -5)
+        self.next_blocks[0].move(0, -128)
+        self.next_blocks[1].move(0, -128)
         self.next_blocks.append(Brick(self.screen,
-                            13, 17,
-                            TEMPLATES[self.board.next_blocks[2] - 1][0],
+                            TEMPLATES[self.board.next_blocks[2] - 1][1],
                             self.IMAGES["blocks"][self.board.next_blocks[2] - 1]))
+        self.next_blocks[2].place_at_middle(X_CORNER + 432, Y_CORNER + 32 * (10))
 
     def draw_game(self) -> None:
-        self.screen.fill((15, 65, 120))
+        self.screen.fill((4, 26, 77))
         self.screen.blit(self.IMAGES["gridcell"], (X_CORNER, Y_CORNER))
-        pygame.draw.rect(self.screen, (11, 47, 85), 
+        pygame.draw.rect(self.screen, (4, 21, 59), 
                          (X_CORNER + 352, Y_CORNER, 160, 640))
         for next_block in self.next_blocks:
             next_block.draw()
@@ -92,7 +94,7 @@ class Game:
                     self.screen.blit(self.IMAGES["blocks"][self.board.matrix[row][col] - 1],
                                      (X_CORNER + 32 * col, Y_CORNER + 32 * (row - 5)))
         self.current_block.draw()
-        pygame.draw.rect(self.screen, (15, 65, 120),
+        pygame.draw.rect(self.screen, (4, 26, 77),
                          (X_CORNER, 0, 320, Y_CORNER))
 
     def __init_images(self) -> None:

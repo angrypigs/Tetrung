@@ -4,7 +4,7 @@ from os import path
 WIDTH = 600
 HEIGHT = 880
 X_CORNER = 64
-Y_CORNER = 96
+Y_CORNER = 160
 
 TEMPLATES = (
     (
